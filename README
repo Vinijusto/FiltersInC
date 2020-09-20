@@ -1,0 +1,5 @@
+Para compilar usar comando 'make' en el directrio TP EJECUTABLE, o 'g++ -pthread -o *.cpp ejecutable'. Esto es para cuando se modifique el código y luego se quiera volver a compilar, pero con el ejecutable tp se podría usar de primeras
+
+Para información de como ejecutar con cada filtro usar comando './tp --help', paraver el manual.
+
+Fotos de ejemplo en carpeta 'out'.

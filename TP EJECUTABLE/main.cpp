@@ -23,7 +23,7 @@ using namespace std;
 // convert string to back to lower case
 
 string filter_check(vector<string> filter){//verifica que, en caso de haberse pasado la cantidad correcta de parametros(1) existe el filtro escrito por consola
-	vector<string> filters{"blackwhite","contrast","merge","boxblur","frame","zoom","edgedetection","chanel","pixeled","nuevo","invers","inverschanel","blurpotente"};
+	vector<string> filters{"blackwhite","contrast","merge","boxblur","frame","zoom","edgedetection","chanel","pixeled","nuevo","invers","inverschanel","blurpotente","cuadraditos"};
 	if(filter.size() == 1){
 		string filtroabuscar = filter[0];
 		for_each(filtroabuscar.begin(), filtroabuscar.end(), [](char & c){
@@ -162,7 +162,7 @@ int main(int argc , char* argv[]){
 		printf("\n\nWarnings:\n     -Error de filtro Merge: por temas de simplicidad, en el 3er parámetro (véase filtro merge, en el apartado de filtros) del filtro mencionado solo se puede       ingresar una imagen(tampoco se puede ingresar dirs con mas de una imagen) y además todas las imagenes que se combinar\n     -SS múltimples: no hay inconveniente al escribir dos o mas separador de parametros('SS'). Ejemplo: ./tp blackwhite SS SS <imagen1.ppm> <imagen2.ppm> ...        SS SS <threads = int> (No debería ser un error)\n     -Funciones con multithreading: hay error de ejecución al ejecutar varias imagenes(de siete u ocho en adelante) de manera multithreading\n     - Directorios(lotes):indicar la ruta del rirectorio y agregar .d, esto sirve para que el programa entienda que es un dir\n     -Error con los threads: no ingresar mas threads del ancho o alto de la imagen, no suele pasar pero hay imagenes muy pequeñas...\n");
 		exit(EXIT_SUCCESS);
 	}
-	string chaelelgido;
+	string chanelelegido;
 	int zoom; // Var perteneciente a Zoom
 	int numthreads = 1; // Var perteneciente a Black&Whit y boxBlur.
 	int numeframe; // Var perteneciente a Frame.
@@ -231,7 +231,7 @@ int main(int argc , char* argv[]){
 		}else if(probablefiltro == "chanel"){
 			if(grupodeparams.size() == 3){
 				if(img_check(grupodeparams[1],std::ref(imagenes)) == true and is_valid_chanle(grupodeparams[2]) == true){
-					chaelelgido = grupodeparams[2][0];
+					chanelelegido = grupodeparams[2][0];
 					filtrofinal = "chanel";
 				}
 			}
@@ -259,6 +259,13 @@ int main(int argc , char* argv[]){
 			if(grupodeparams.size() == 2){
 				if(img_check(grupodeparams[1],std::ref(imagenes)) == true){
 					filtrofinal = "blurpotente";
+				}
+			}
+		}
+		else if(probablefiltro == "cuadraditos"){
+			if(grupodeparams.size() == 2){
+				if(img_check(grupodeparams[1],std::ref(imagenes)) == true){
+					filtrofinal = "cuadraditos";
 				}
 			}
 		}
@@ -336,7 +343,7 @@ int main(int argc , char* argv[]){
 		printf("Applying Chanel... \n");
 		for(int ni = 0; ni < imagenes.size();ni++){
 			ppm img(imagenes[ni]);
-			chanel(img,chaelelgido);
+			chanel(img,chanelelegido);
 			objetosppm.push_back(img);
 		}
 	}else if(filtrofinal=="pixeled"){
@@ -365,8 +372,14 @@ int main(int argc , char* argv[]){
 		printf("Applying Blurpotente... \n");
 		for(int ni = 0; ni < imagenes.size();ni++){
 			ppm img(imagenes[ni]);
-			blackWhite(img,1);
 			blurpotente(img);
+			objetosppm.push_back(img);
+		}
+	}else if(filtrofinal=="cuadraditos"){
+		printf("Applying Cuadraditos... \n");
+		for(int ni = 0; ni < imagenes.size();ni++){
+			ppm img(imagenes[ni]);
+			cuadraditos(img);
 			objetosppm.push_back(img);
 		}
 	}

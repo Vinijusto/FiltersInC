@@ -20,5 +20,6 @@ void pixelart(ppm& img);
 void invers(ppm& img,ppm& imgaux);
 void inverschanel(ppm& img);
 void blurpotente(ppm& img);
+void cuadraditos(ppm& img);
 
 #endif

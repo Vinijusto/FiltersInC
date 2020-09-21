@@ -59,6 +59,7 @@ void blackWhite(ppm& img, short int threads){
     		threadsvect[l].join();
 		}
 	}
+	return;
 }
 
 
@@ -77,6 +78,7 @@ void contrast(ppm& img, float contrast){
 			img.setPixel(h,w,pixel(r,g,b).truncate());
 		}
 	}
+	return;
 }
 
 void merge(ppm& img1, ppm& img2, float alpha){
@@ -94,6 +96,7 @@ void merge(ppm& img1, ppm& img2, float alpha){
 			img1.setPixel(h,w,pixel(rimg1*alpha+rimg2*alpha2,gimg1*alpha+gimg2*alpha2,bimg1*alpha+bimg2*alpha2));
 		}
 	}
+	return;
 }
 
 void boxBlur(ppm &img,short int comienzo,short int final, short int threads){
@@ -141,6 +144,7 @@ void boxBlur(ppm &img,short int comienzo,short int final, short int threads){
     		threadsvect[l].join();
 		}
 	}
+	return;
 }
 
 void Zoom(ppm &img, ppm &img_zoomed, int n){
@@ -158,6 +162,7 @@ void Zoom(ppm &img, ppm &img_zoomed, int n){
 			}
 		}
 	}
+	return;
 }
 
 
@@ -175,6 +180,7 @@ void frame(ppm& img, pixel color, int x){
 				img.setPixel(h,w,color);
 		}
 	}
+	return;
 }
 
 
@@ -202,6 +208,7 @@ void edgeDetection(ppm& img, ppm& img_target){
 			img_target.setPixel(h1,w1,(pixel(sqrt(pow(r,2) + pow(rinv,2)),sqrt(pow(g,2) + pow(ginv,2)),sqrt(pow(b,2) + pow(binv,2)))).truncate());
 		}
 	}
+	return;
 }
 
 void blurpotente(ppm& img){
@@ -222,6 +229,7 @@ void blurpotente(ppm& img){
 			img.setPixel(h1,w1,(pixel(r,g,b).truncate()));
 		}
 	}
+	return;
 }
 
 void chanel(ppm& img, string chanel){
@@ -235,33 +243,37 @@ void chanel(ppm& img, string chanel){
 			img.setPixel(h,w,pixel(r,g,b));
 		}
 	}
+	return;
 }
 
 void pixelart(ppm& img){
 	/* PIXELATES THE IMAGE */
-	short int r;
-	short int g;
-	short int b;
-	for(int h = 0; h < img.height-7; h = h + 7){
-		for(int w = 0; w < img.width-7; w = w + 7){
-			r = 0;
-			g = 0;
-			b = 0;
+	short int r,g,b,divisorias = 0;
+	for(int h = 0; h < img.height; h = h + 7){
+		for(int w = 0; w < img.width; w = w + 7){
+			r = 0,divisorias = 0,g = 0,b = 0;
 			for(int h2 = 0; h2 < 7; h2++){ 
 				for(int w2 = 0; w2 < 7; w2++){
-					r += img.getPixel((h + h2),(w + w2)).r;
-					g += img.getPixel((h + h2),(w + w2)).g;
-					b += img.getPixel((h + h2),(w + w2)).b;
+					if(h + h2 < img.height and w + w2 < img.width){
+						divisorias++;
+						r += img.getPixel((h + h2),(w + w2)).r;
+						g += img.getPixel((h + h2),(w + w2)).g;
+						b += img.getPixel((h + h2),(w + w2)).b;
+					}
 				}
 			}
-			r = r/49;
-			g = g/49;
-			b = b/49;
-			for(int h3 = 0; h3 < 7; h3++)
-				for(int w3 = 0; w3 < 7; w3++)
-					img.setPixel(h + h3,w + w3,pixel(r,g,b));
+			r = r/divisorias;
+			g = g/divisorias;
+			b = b/divisorias;
+			for(int h3 = 0; h3 < 7; h3++){
+				for(int w3 = 0; w3 < 7; w3++){
+					if(h + h3 < img.height and w + w3 < img.width)
+						img.setPixel(h + h3,w + w3,pixel(r,g,b));
+				}
+			}
 		}
 	}
+	return;
 }
 
 void invers(ppm& img,ppm& imgaux){
@@ -288,4 +300,49 @@ void inverschanel(ppm& img){
 			img.setPixel(h,w,pixel(b,g,r).truncate());
 		}
 	}
+	return;
+}
+
+void cuadraditos(ppm& img){
+	/* INVERTS THE CHANNELS */
+	short int r,g,b,aux,aux2;
+	vector<vector<int>> multiplic;
+	vector<vector<int>> colorporgrupo;
+	vector<vector<int>> colors{{250, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 250, 0}, {255, 0, 255}, {0, 255, 255}, {240, 50, 230}, {210, 245, 60}, {250, 190, 212}, {0, 128, 128}, {220, 190, 255}, {170, 110, 40}, {255, 250, 200}, {128, 0, 0}, {170, 255, 195}, {128, 128, 0}, {255, 215, 180}, {0, 0, 128}, {128, 128, 128}, {255, 255, 255}};
+	vector<vector<int>> colorsdescartados;
+	vector<int> colorelegido;
+	srand(time(NULL));
+	colorporgrupo.push_back({0,0,0}); 
+	multiplic.push_back({5,5,5});
+	for(int h = 0; h < img.height; h++){
+		for(int w = 0; w < img.width; w++){
+			if(colors.size() <= 1){
+				for(int n = 0; n < colorsdescartados.size(); n++){
+					colors.push_back(colorsdescartados[n]);
+				}
+				colorsdescartados.clear();
+			}
+			r = img.getPixel(h,w).r;
+			g = img.getPixel(h,w).g; 
+			b = img.getPixel(h,w).b;
+			aux = 0;
+			for(int i = 0; i < multiplic.size(); i++){
+				if(r > multiplic[i][0] - 40 and r < multiplic[i][0] + 40 and g > multiplic[i][1] - 40 and g < multiplic[i][1] + 40 and b > multiplic[i][2] - 40 and b < multiplic[i][2] + 40){
+					img.setPixel(h,w,pixel(colorporgrupo[i][0],colorporgrupo[i][1],colorporgrupo[i][2]).truncate());
+					aux++;
+					break;
+				}
+			}
+			if(aux == 0){
+				multiplic.push_back({r,g,b});
+				aux2 = rand() % colors.size();
+				colorelegido = colors[aux2];
+				colors.erase(colors.begin() + aux2);
+				colorsdescartados.push_back(colorelegido);
+				colorporgrupo.push_back(colorelegido);
+				img.setPixel(h,w,pixel(colorelegido[0],colorelegido[1],colorelegido[2]).truncate());
+			}
+		}
+	}
+	return;
 }

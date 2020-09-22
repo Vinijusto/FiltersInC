@@ -3,3 +3,5 @@ Para compilar usar comando 'make' en el directrio TP EJECUTABLE, o 'g++ -pthread
 Para información de como ejecutar con cada filtro usar comando './tp --help', paraver el manual.
 
 Fotos de ejemplo en carpeta 'out'.
+
+Cabe destacar que el programa fué desarrollado en y para una entorno linux
